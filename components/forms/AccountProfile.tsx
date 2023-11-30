@@ -10,6 +10,7 @@ import ProfileForm from '../shared/ProfileForm';
 interface propTypes {
     user: {
         id: string;
+        name: string;
         objectId: string;
         username: string;
         bio: string;
@@ -23,10 +24,10 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
     const form = useForm({
         resolver: zodResolver(UserValidation),
         defaultValues: {
-            profile_photo: '',
-            name: '',
-            username: '',
-            bio: ''
+            profile_photo: user?.image || '',
+            name: user?.name || "",
+            username: user.username || "",
+            bio: user?.bio || ''
         }
     });
 
@@ -44,7 +45,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                 <ProfileForm 
                     isAvatarField={true}
                     fieldValue='profile_photo'
-                    formItemClassName='gap-4'
+                    formItemClassName='gap-4 items-center'
                     formLableClassName='account-form_image-label'
                 />
 
@@ -52,7 +53,15 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                     isAvatarField={false}
                     fieldValue='name'
                     fieldName='Name'
-                    formItemClassName='gap-3 w-full'
+                    formItemClassName='flex-col gap-3 w-full'
+                    formLableClassName='text-base-semibold text-light-2'
+                />
+
+                <ProfileForm 
+                    isAvatarField={false}
+                    fieldValue='username'
+                    fieldName='Username'
+                    formItemClassName='flex-col gap-3 w-full'
                     formLableClassName='text-base-semibold text-light-2'
                 />
 
@@ -61,19 +70,11 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                     isBioField={true}
                     fieldValue='bio'
                     fieldName='Bio'
-                    formItemClassName='gap-3 w-full'
-                    formLableClassName='text-base-semibold text-light-2'
-            />
-
-                <ProfileForm 
-                    isAvatarField={false}
-                    fieldValue='username'
-                    fieldName='Username'
-                    formItemClassName='gap-3 w-full'
+                    formItemClassName='flex-col gap-3 w-full'
                     formLableClassName='text-base-semibold text-light-2'
                 />
 
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className='bg-primary-500'>Submit</Button>
             </form>
     </Form>
     )

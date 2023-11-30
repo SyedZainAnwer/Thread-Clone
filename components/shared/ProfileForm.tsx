@@ -8,10 +8,8 @@ import {
     FormLabel, 
 } from '@/components/ui/form'
 import { UserValidation } from '@/lib/validations/user';
-import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from "zod"
 import Image from 'next/image';
 import { ChangeEvent } from 'react';
 import { Textarea } from '../ui/textarea';
@@ -53,7 +51,7 @@ const ProfileForm = ({
             control={form.control}
             name={fieldValue}
             render={({ field }) => (
-            <FormItem className={`flex items-center ${formItemClassName}`}>
+            <FormItem className={`flex ${formItemClassName}`}>
             <FormLabel className={formLableClassName}>
                 { isAvatarField ? (
                     field.value ? (

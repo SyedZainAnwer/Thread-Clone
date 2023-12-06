@@ -1,7 +1,6 @@
 "use client"
 import { useForm } from 'react-hook-form';
-import { 
-    Form, 
+import {
     FormControl, 
     FormField, 
     FormItem, 
@@ -11,7 +10,7 @@ import { UserValidation } from '@/lib/validations/user';
 import { Input } from '../ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
 import { Textarea } from '../ui/textarea';
 
 interface propTypes {
@@ -21,6 +20,7 @@ interface propTypes {
     isBioField?: boolean;
     formLableClassName: string;
     formItemClassName: string;
+    setFiles?: Dispatch<SetStateAction<File[]>>;
 }
 
 const ProfileForm = ({ 
@@ -29,10 +29,9 @@ const ProfileForm = ({
     isBioField,
     fieldName, 
     formLableClassName, 
-    formItemClassName
+    formItemClassName,
+    setFiles
 }:propTypes) => {
-
-    const [ files, setFiles ] = useState<File[]>([]);
 
     const form = useForm({
         resolver: zodResolver(UserValidation),
@@ -51,7 +50,7 @@ const ProfileForm = ({
 
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            setFiles(Array.from(e.target.files));
+            {isAvatarField && setFiles && setFiles(Array.from(e.target.files))};
 
             if(!file.type.includes('image')) return;
 

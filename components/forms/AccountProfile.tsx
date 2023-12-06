@@ -1,11 +1,16 @@
 "use client"
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+
+import * as z from "zod"
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import { Form } from '@/components/ui/form'
 import { UserValidation } from '@/lib/validations/user';
 import { Button } from '../ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from "zod"
 import ProfileForm from '../shared/ProfileForm';
+import { isBase64Image } from '@/lib/utils';
+import { useUploadThing } from '@/lib/uploadthing'
 
 interface propTypes {
     user: {
@@ -21,6 +26,9 @@ interface propTypes {
 
 const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
+    const [ files, setFiles ] = useState<File[]>([]);
+    const { startUpload } = useUploadThing("media");
+
     const form = useForm({
         resolver: zodResolver(UserValidation),
         defaultValues: {
@@ -31,8 +39,18 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
         }
     });
 
-    const onSubmit = (values: z.infer<typeof UserValidation>) => {
-        console.log(values)
+    const onSubmit = async(values: z.infer<typeof UserValidation>) => {
+        const blob = values.profile_photo;
+
+        const hasImageChanged = isBase64Image(blob);
+
+        if(hasImageChanged) {
+            const imageRes = await startUpload(files);
+
+            if(imageRes && imageRes[0].url) {
+                values.profile_photo = imageRes[0].url;
+            }
+        }
     }
 
     return (
@@ -43,6 +61,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
             >
 
                 <ProfileForm 
+                    setFiles={setFiles}
                     isAvatarField={true}
                     fieldValue='profile_photo'
                     formItemClassName='gap-4 items-center'

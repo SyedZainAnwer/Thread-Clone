@@ -1,5 +1,3 @@
-// import Image from '@/public/assets/home.svg'
-
 export const sidebarLinks = [
     {
         imgURL: "/assets/home.svg",

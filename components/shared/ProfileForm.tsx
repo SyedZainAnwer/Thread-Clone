@@ -10,9 +10,10 @@ import { Input } from '../ui/input';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { Textarea } from '../ui/textarea';
+import { CombinedValidation } from '@/lib/validations/combined';
 
 interface propTypes {
-    fieldValue: "name" | "username" | "profile_photo" | "bio";
+    fieldValue: "name" | "username" | "profile_photo" | "bio" | "thread";
     fieldName?: string;
     isAvatarField: boolean;
     isBioField?: boolean;
@@ -20,7 +21,8 @@ interface propTypes {
     formItemClassName: string;
     setFiles?: Dispatch<SetStateAction<File[]>>;
     handleImage?: (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => void;
-    formControl?: Control<{ profile_photo: string; name: string; username: string; bio: string; }, any> | undefined;
+    formControl?: Control<CombinedValidation> | undefined;
+    isThreadField?: boolean;
 }
 
 const ProfileForm = ({ 
@@ -32,7 +34,8 @@ const ProfileForm = ({
     formItemClassName,
     setFiles,
     formControl,
-    handleImage
+    handleImage,
+    isThreadField
 }:propTypes) => {
 
     return (
@@ -65,7 +68,7 @@ const ProfileForm = ({
                 
             </FormLabel>
             <FormControl className='flex-1 text-base-semibold text-gray-200'>
-                { isAvatarField ? (
+                { !isThreadField && isAvatarField ? (
                     <Input 
                         type='file'
                         accept='image/*'
@@ -89,6 +92,16 @@ const ProfileForm = ({
                     )
                 ) }
             </FormControl>
+            
+            {isThreadField && 
+                <FormControl className='no-focus border border-dark-4 bg-dark-3 text-1'>
+                    <Textarea 
+                        rows={150}
+                        className='account-form_input no-focus'
+                        {...field}
+                    />
+                </FormControl>
+            }
         </FormItem>
     )}
     />

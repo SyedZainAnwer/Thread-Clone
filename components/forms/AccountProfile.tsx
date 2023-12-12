@@ -2,16 +2,19 @@
 import { useForm } from 'react-hook-form';
 import { ChangeEvent, useState } from 'react';
 
-import * as z from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Form } from '@/components/ui/form'
+
 import { UserValidation } from '@/lib/validations/user';
-import { Button } from '../ui/button';
-import ProfileForm from '../shared/ProfileForm';
 import { isBase64Image } from '@/lib/utils';
 import { useUploadThing } from '@/lib/uploadthing'
 import { updateUser } from '@/lib/actions/user.actions';
+import { CombinedValidation } from '@/lib/validations/combined';
+import { CommentValidation, ThreadValidation } from '@/lib/validations/thread';
+
+import { Button } from '../ui/button';
+import ProfileForm from '../shared/ProfileForm';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface propTypes {
@@ -34,37 +37,49 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const form = useForm<z.infer<typeof UserValidation>>({
-        resolver: zodResolver(UserValidation),
+    const form = useForm<CombinedValidation> ({
+        resolver: 
+            zodResolver(UserValidation) 
+        || zodResolver(ThreadValidation) 
+        || zodResolver(CommentValidation),
+
         defaultValues: {
             profile_photo: user?.image ? user.image : "",
             name: user?.name ? user.name : "",
             username: user?.username ? user.username : "",
             bio: user?.bio ? user.bio : "",
+            thread: '',
+            // accountId: userId,
+            threadComment: ''
         },
     });
 
-    const onSubmit = async(values: z.infer<typeof UserValidation>) => {
-        const blob = values.profile_photo;
+    const control = form?.control;
 
-        const hasImageChanged = isBase64Image(blob);
+    const onSubmit = async(values: CombinedValidation) => {
+        if('profile_photo' && 'username' && 'bio' && 'name' in values) {
 
-        if(hasImageChanged) {
-            const imageRes = await startUpload(files);
-
-            if(imageRes && imageRes[0].url) {
-                values.profile_photo = imageRes[0].url;
+            const blob = values.profile_photo;
+    
+            const hasImageChanged = isBase64Image(blob);
+    
+            if(hasImageChanged) {
+                const imageRes = await startUpload(files);
+    
+                if(imageRes && imageRes[0].url) {
+                    values.profile_photo = imageRes[0].url;
+                }
             }
-        }
 
-        await updateUser({
-            userId: user.id,
-            username: values.username,
-            name: values.name,
-            bio: values.bio,
-            image: values.profile_photo,
-            path: pathname
-        })
+            await updateUser({
+                userId: user.id,
+                username: values.username,
+                name: values.name,
+                bio: values.bio,
+                image: values.profile_photo,
+                path: pathname
+            })
+        }
 
         if(pathname === '/profile/edit') {
             router.back()
@@ -106,7 +121,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                 <ProfileForm 
                     setFiles={setFiles}
                     handleImage={handleImage}
-                    formControl={form.control}
+                    formControl={control}
                     isAvatarField={true}
                     fieldValue='profile_photo'
                     formItemClassName='gap-4 items-center'
@@ -115,7 +130,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
                 <ProfileForm 
                     isAvatarField={false}
-                    formControl={form.control}
+                    formControl={control}
                     fieldValue='name'
                     fieldName='Name'
                     formItemClassName='flex-col gap-3 w-full'
@@ -124,7 +139,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
                 <ProfileForm 
                     isAvatarField={false}
-                    formControl={form.control}
+                    formControl={control}
                     fieldValue='username'
                     fieldName='Username'
                     formItemClassName='flex-col gap-3 w-full'
@@ -133,7 +148,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
                 <ProfileForm 
                     isAvatarField={false}
-                    formControl={form.control}
+                    formControl={control}
                     isBioField={true}
                     fieldValue='bio'
                     fieldName='Bio'

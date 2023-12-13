@@ -10,12 +10,11 @@ import { UserValidation } from '@/lib/validations/user';
 import { isBase64Image } from '@/lib/utils';
 import { useUploadThing } from '@/lib/uploadthing'
 import { updateUser } from '@/lib/actions/user.actions';
-import { CombinedValidation } from '@/lib/validations/combined';
-import { CommentValidation, ThreadValidation } from '@/lib/validations/thread';
 
 import { Button } from '../ui/button';
 import ProfileForm from '../shared/ProfileForm';
 import { usePathname, useRouter } from 'next/navigation';
+import { z } from 'zod';
 
 interface propTypes {
     user: {
@@ -37,38 +36,27 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
     const router = useRouter();
     const pathname = usePathname();
 
-    const form = useForm<CombinedValidation> ({
-        resolver: 
-            zodResolver(UserValidation) 
-        || zodResolver(ThreadValidation) 
-        || zodResolver(CommentValidation),
+    const form = useForm<z.infer<typeof UserValidation>> ({
+        resolver: zodResolver(UserValidation),
 
         defaultValues: {
             profile_photo: user?.image ? user.image : "",
             name: user?.name ? user.name : "",
             username: user?.username ? user.username : "",
             bio: user?.bio ? user.bio : "",
-            thread: '',
-            // accountId: userId,
-            threadComment: ''
         },
     });
 
-    const control = form?.control;
+    const onSubmit = async(values: z.infer<typeof UserValidation>) => {
+        const blob = values.profile_photo;
 
-    const onSubmit = async(values: CombinedValidation) => {
-        if('profile_photo' && 'username' && 'bio' && 'name' in values) {
+        const hasImageChanged = isBase64Image(blob);
 
-            const blob = values.profile_photo;
-    
-            const hasImageChanged = isBase64Image(blob);
-    
-            if(hasImageChanged) {
-                const imageRes = await startUpload(files);
-    
-                if(imageRes && imageRes[0].url) {
-                    values.profile_photo = imageRes[0].url;
-                }
+        if(hasImageChanged) {
+            const imageRes = await startUpload(files);
+
+            if(imageRes && imageRes[0].url) {
+                values.profile_photo = imageRes[0].url;
             }
 
             await updateUser({
@@ -79,6 +67,10 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                 image: values.profile_photo,
                 path: pathname
             })
+        }   else if('thread' in values) {
+            console.log("Thread is there!")
+        }   else if('threadComment' in values) {
+            console.log("Comments are there!")
         }
 
         if(pathname === '/profile/edit') {
@@ -121,7 +113,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                 <ProfileForm 
                     setFiles={setFiles}
                     handleImage={handleImage}
-                    formControl={control}
+                    formControl={form?.control}
                     isAvatarField={true}
                     fieldValue='profile_photo'
                     formItemClassName='gap-4 items-center'
@@ -130,7 +122,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
                 <ProfileForm 
                     isAvatarField={false}
-                    formControl={control}
+                    formControl={form?.control}
                     fieldValue='name'
                     fieldName='Name'
                     formItemClassName='flex-col gap-3 w-full'
@@ -139,7 +131,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
                 <ProfileForm 
                     isAvatarField={false}
-                    formControl={control}
+                    formControl={form?.control}
                     fieldValue='username'
                     fieldName='Username'
                     formItemClassName='flex-col gap-3 w-full'
@@ -148,7 +140,7 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
 
                 <ProfileForm 
                     isAvatarField={false}
-                    formControl={control}
+                    formControl={form?.control}
                     isBioField={true}
                     fieldValue='bio'
                     fieldName='Bio'

@@ -4,16 +4,16 @@ import {
     FormControl, 
     FormField, 
     FormItem, 
-    FormLabel, 
+    FormLabel,
+    FormMessage, 
 } from '@/components/ui/form'
 import { Input } from '../ui/input';
 import Image from 'next/image';
 import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { Textarea } from '../ui/textarea';
-import { CombinedValidation } from '@/lib/validations/combined';
 
 interface propTypes {
-    fieldValue: "name" | "username" | "profile_photo" | "bio" | "thread";
+    fieldValue: "name" | "username" | "profile_photo" | "bio";
     fieldName?: string;
     isAvatarField: boolean;
     isBioField?: boolean;
@@ -21,7 +21,7 @@ interface propTypes {
     formItemClassName: string;
     setFiles?: Dispatch<SetStateAction<File[]>>;
     handleImage?: (e: ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => void;
-    formControl?: Control<CombinedValidation> | undefined;
+    formControl?: Control<{ profile_photo: string; name: string; username: string; bio: string;}, any>;
     isThreadField?: boolean;
 }
 
@@ -37,7 +37,6 @@ const ProfileForm = ({
     handleImage,
     isThreadField
 }:propTypes) => {
-
     return (
         <FormField
             control={formControl}
@@ -92,16 +91,7 @@ const ProfileForm = ({
                     )
                 ) }
             </FormControl>
-            
-            {isThreadField && 
-                <FormControl className='no-focus border border-dark-4 bg-dark-3 text-1'>
-                    <Textarea 
-                        rows={150}
-                        className='account-form_input no-focus'
-                        {...field}
-                    />
-                </FormControl>
-            }
+            <FormMessage />
         </FormItem>
     )}
     />

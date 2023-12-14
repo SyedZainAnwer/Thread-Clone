@@ -1,6 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import heartIcon from '@/public/assets/heart-gray.svg'
+import ThreadIcons from "../shared/ThreadIcons";
+
+import heartIcon from '@/public/assets/heart-gray.svg';
+import repostIcon from '@/public/assets/repost.svg';
+import shareIcon from '@/public/assets/share.svg';
+import commentIcon from '@/public/assets/reply.svg';
 
 interface propTypes {
     id: string;
@@ -67,11 +72,24 @@ const ThreadCard = ({
                             {content}
                         </p>
 
-                        <div className="mt-5 flex flex-col gap-3">
-                            <div className="flex gap-3 5">
-                                
-                            </div>
+                        <div className="mt-5 flex flex-row gap-3">
+                            <ThreadIcons src={heartIcon} />
+                            <ThreadIcons 
+                                src={commentIcon} 
+                                isCommentIcon={true}
+                                commentLink={`/thread/${id}`}
+                            />
+                            <ThreadIcons src={repostIcon} />
+                            <ThreadIcons src={shareIcon} />
                         </div>
+
+                        {isComment && comments.length > 0 && (
+                            <Link href={`/thread/${id}`}>
+                                <p className="mt-1 text-subtle-medium text-gray-1">
+                                    {comments.length} replies
+                                </p>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>

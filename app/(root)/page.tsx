@@ -1,9 +1,11 @@
 import { fetchPosts } from "@/lib/actions/thread.actions";
 import { currentUser } from "@clerk/nextjs";
+import ThreadCard from "@/components/cards/ThreadCard";
 
 const Home = async() => {
 
   const result = await fetchPosts(1, 30);
+  console.log(result)
   const user = await currentUser();
 
   return (
@@ -15,11 +17,11 @@ const Home = async() => {
           <p className="no-result">No threads found</p>
         ) : (
           <>
-            {result.posts.map((post) => {
+            {result.posts.map((post) => (
               <ThreadCard 
                 key={post._id}
                 id={post._id}
-                currentUserId={user?.id}
+                currentUserId={user?.id || ""}
                 parentId={post.parentId}
                 content={post.text}
                 author={post.author}
@@ -27,7 +29,7 @@ const Home = async() => {
                 createdAt={post.createdAt}
                 comments={post.children}
               />
-            })}
+            ))}
           </>
         )}
       </section>

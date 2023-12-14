@@ -24,9 +24,8 @@ const PostThread = ({ userId }: { userId: string }) => {
 
     const form = useForm({
     resolver: zodResolver(ThreadValidation),
-
     defaultValues: {
-        thread: "",
+        thread: '',
         accountId: userId,
     },
 });

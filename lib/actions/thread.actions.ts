@@ -32,3 +32,33 @@ export const createThread = async({ text, author, communityId, path }: Params) =
         throw new Error(`Error creating thread: ${error.message}`)
     }
 }
+
+export const fetchPosts = async(pageNumber = 1, pageSize = 20) => {
+    connectToDB();
+
+    // Calculate the number of posts to skip
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    // Fetch the posts that have no parents(top-level threads...)
+    const postQuery = Thread.find({parentId: {$in: [null, undefined]}})
+        .sort({ createdAt: 'desc' })
+        .skip(skipAmount)
+        .limit(pageSize)
+        .populate({ path: 'author', model: User })
+        .populate({
+            path: 'children',
+            populate: {
+                path: 'author',
+                model: User,
+                select: "id_name parentId image"
+            }
+        });
+    
+    const totalPostsCount = await Thread.countDocuments({parentId: {$in: [null, undefined]}});
+    
+    const posts = await postQuery.exec();
+
+    const isNext = totalPostsCount > skipAmount + posts.length;
+    
+    return { posts, isNext };
+}

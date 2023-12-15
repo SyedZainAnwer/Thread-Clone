@@ -3,19 +3,11 @@
 import { useForm } from "react-hook-form";
 import * as z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../ui/form";
+import { Form } from "../ui/form";
 import { ThreadValidation } from "@/lib/validations/thread";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 import { createThread } from "@/lib/actions/thread.actions";
 import { usePathname, useRouter } from "next/navigation";
+import ThreadForm from "../shared/ThreadForm";
 
 const PostThread = ({ userId }: { userId: string }) => {
 
@@ -44,35 +36,20 @@ const onSubmit = async(values: z.infer<typeof ThreadValidation>) => {
 
     return (
     <>
-        <h1>Hello</h1>
         <Form {...form}>
         <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="mt-10 flex flex-col justify-start gap-10"
         >
-            <FormField
-            control={form.control}
-            name="thread"
-            render={({ field }) => (
-                <FormItem className="flex flex-col w-full gap-3">
-                <FormLabel className="text-base-semibold text-light-2">
-                    Content
-                </FormLabel>
-                <FormControl>
-                    <Textarea 
-                        rows={15}
-                        className="no-focus border border-dark-4 bg-dark-3 text-light-1"
-                        {...field}
-                    />
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
+            <ThreadForm
+                formControl={form.control}
+                isCommentThread={false}
+                buttonValue="Post thread"
+                buttonClassName="bg-primary-500"
+                formControlClassName="no-focus border border-dark-4 bg-dark-3 text-light-1"
+                formItemClassName="flex-col"
+                formLabelClassName="text-base-semibold text-light-2"
             />
-
-            <Button className="bg-primary-500" type="submit">
-                Post Thread
-            </Button>
         </form>
         </Form>
     </>

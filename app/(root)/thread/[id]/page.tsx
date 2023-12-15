@@ -1,8 +1,10 @@
 import { currentUser } from "@clerk/nextjs";
-import { fetchUser } from "@/lib/actions/user.actions";
 import { redirect } from "next/navigation";
 
 import ThreadCard from "@/components/cards/ThreadCard";
+import Comment from "@/components/forms/Comment";
+
+import { fetchUser } from "@/lib/actions/user.actions";
 import { fetchThreadById } from "@/lib/actions/thread.actions";
 
 const Page = async({ params }: { params: { id: string } }) => {
@@ -31,6 +33,14 @@ const Page = async({ params }: { params: { id: string } }) => {
                 createdAt={thread.createdAt}
                 comments={thread.children}
             />
+            </div>
+
+            <div className="mt-7">
+                <Comment 
+                    threadId={thread.id}
+                    currentUserImage={user.imageUrl}
+                    currentUserId={JSON.stringify(userInfo._id)}
+                />
             </div>
         </section>
     )

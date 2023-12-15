@@ -1,12 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { usePathname, useRouter } from "next/navigation";
 import * as z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useForm } from "react-hook-form";
 import { Form } from "../ui/form";
+
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
-import { usePathname, useRouter } from "next/navigation";
+
 import ThreadForm from "../shared/ThreadForm";
 
 const PostThread = ({ userId }: { userId: string }) => {

@@ -1,20 +1,19 @@
 "use client"
 import { useForm } from 'react-hook-form';
+import { usePathname, useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import { Form } from '@/components/ui/form'
 
 import { UserValidation } from '@/lib/validations/user';
 import { isBase64Image } from '@/lib/utils';
 import { useUploadThing } from '@/lib/uploadthing'
 import { updateUser } from '@/lib/actions/user.actions';
 
+import { Form } from '@/components/ui/form'
 import { Button } from '../ui/button';
 import ProfileForm from '../shared/ProfileForm';
-import { usePathname, useRouter } from 'next/navigation';
-import { z } from 'zod';
 
 interface propTypes {
     user: {

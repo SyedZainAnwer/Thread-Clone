@@ -62,3 +62,40 @@ export const fetchPosts = async(pageNumber = 1, pageSize = 20) => {
     
     return { posts, isNext };
 }
+
+export const fetchThreadById = async(id: string) => {
+    connectToDB();
+
+    try{
+        // TODO: Populate Community
+        const thread = await Thread.findById(id)
+        .populate({ // fetching main thread
+            path: 'author',
+            model: User,
+            select: '_id id name image'
+        })
+        .populate({ // fetching the comment of the main thread
+            path: 'children',
+            populate: ([
+                {
+                    path: 'author',
+                    model: User,
+                    select: '_id id name parentId image'
+                }, 
+                { // fetching the comment of the comment
+                    path: 'children',
+                    model: Thread,
+                    populate: {
+                        path: 'author',
+                        model: User,
+                        select: '_id id name parentId image'
+                    }
+                }
+            ])
+        }).exec();
+
+        return thread;
+    } catch(error: any) {
+        throw new Error(`Error fetching thread: ${error.message}`)
+    }
+}

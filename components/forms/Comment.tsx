@@ -6,12 +6,18 @@ import * as z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { Form } from "../ui/form";
+import { Form, 
+    FormControl, 
+    FormField, 
+    FormItem, 
+    FormLabel } from "../ui/form";
 
 import { CommentValidation } from "@/lib/validations/thread";
-import { addCommentToThread, createThread } from "@/lib/actions/thread.actions";
+import { addCommentToThread } from "@/lib/actions/thread.actions";
 
-import ThreadForm from "../shared/ThreadForm";
+import Image from "next/image";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 interface propTypes {
     threadId: string;
@@ -43,18 +49,48 @@ const onSubmit = async(values: z.infer<typeof CommentValidation>) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="comment-form"
             >
-                <ThreadForm
-                    formControl={form.control}
-                    isCommentThread={true}
-                    commentThreadImage={currentUserImage}
-                    formControlClassName="border-none bg-transparent"
-                    formItemClassName="items-center"
-                    buttonClassName="comment-form_btn"
-                    buttonValue="Reply"
-                />
+            <FormField
+            control={form.control}
+            name="threadComment"
+            render={({ field }) => (
+                <FormItem className="flex w-full items-center gap-3">
+                    <FormLabel>
+                                <Image 
+                                    src={currentUserImage}
+                                    alt="image"
+                                    width={48}
+                                    height={48}
+                                    className="rounded-full object-cover"
+                                />
+                        
+                    </FormLabel>
+                    <FormControl className="border-none bg-transparent">
+                            <Input 
+                                type="text"
+                                placeholder="Comment..."
+                                className="no-focus text-light-1 outline-none"
+                                {...field}
+                            />
+                    </FormControl>
+                </FormItem>
+            )}
+            />
+
+        <Button className="comment-form_btn" type="submit">
+            Reply
+        </Button>
             </form>
         </Form>
     )
 }
 
 export default Comment;
+{/* <ThreadForm
+    formControl={form.control}
+    isCommentThread={true}
+    commentThreadImage={currentUserImage}
+    formControlClassName="border-none bg-transparent"
+    formItemClassName="items-center"
+    buttonClassName="comment-form_btn"
+    buttonValue="Reply"
+/> */}

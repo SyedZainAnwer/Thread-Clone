@@ -5,12 +5,19 @@ import * as z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useForm } from "react-hook-form";
-import { Form } from "../ui/form";
+import { 
+    Form, 
+    FormControl, 
+    FormField, 
+    FormItem, 
+    FormLabel, 
+    FormMessage } from "../ui/form";
 
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
 
-import ThreadForm from "../shared/ThreadForm";
+import { Textarea } from "../ui/textarea";
+import { Button } from "../ui/button";
 
 const PostThread = ({ userId }: { userId: string }) => {
 
@@ -44,15 +51,29 @@ const onSubmit = async(values: z.infer<typeof ThreadValidation>) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="mt-10 flex flex-col justify-start gap-10"
         >
-            <ThreadForm
-                formControl={form.control}
-                isCommentThread={false}
-                buttonValue="Post thread"
-                buttonClassName="bg-primary-500"
-                formControlClassName="no-focus border border-dark-4 bg-dark-3 text-light-1"
-                formItemClassName="flex-col"
-                formLabelClassName="text-base-semibold text-light-2"
+            <FormField
+            control={form.control}
+            name="thread"
+            render={({ field }) => (
+                <FormItem className="flex flex-col w-full gap-3">
+                    <FormLabel className="text-base-semibold text-light-2">
+                            Content 
+                    </FormLabel>
+                    <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
+                            <Textarea 
+                                rows={15}
+                                className="no-focus border border-dark-4 bg-dark-3 text-light-1"
+                                {...field}
+                            />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}
             />
+
+        <Button className="bg-primaty-500" type="submit">
+            Post thread
+        </Button>
         </form>
         </Form>
     </>

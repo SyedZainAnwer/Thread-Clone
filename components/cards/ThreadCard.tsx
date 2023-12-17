@@ -73,7 +73,7 @@ const ThreadCard = ({
                             {content}
                         </p>
 
-                        <div className="mt-5 flex flex-row gap-3">
+                        <div className={`${isComment && 'mb-10'} mt-5 flex flex-row gap-3`}>
                             <ThreadIcons src={heartIcon} />
                             <ThreadIcons 
                                 src={commentIcon} 

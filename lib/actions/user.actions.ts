@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { connectToDB } from "../mangoose"
 import User from "../models/user.model";
+import Thread from "../models/thread.model";
 
 interface Params {
     userId: string,
@@ -56,5 +57,32 @@ export const fetchUser = async(userId: string) => {
         // })
     } catch(error: any) {
         throw new Error(`Failed to fetch user: ${error.message}`)
+    }
+}
+
+export const fetchUserPosts = async(userId: string) => {
+    try {
+        connectToDB();
+
+        // Find all threads authored by user with the given userId
+        const threads = await User.findOne({ id: userId })
+        .populate({
+            path: 'threads',
+            model: Thread,
+            populate: {
+                path: 'children',
+                model: Thread,
+                populate: {
+                    path: 'author',
+                    model: User,
+                    select: 'name image id'
+                }
+            }
+        })
+
+        return threads;
+
+    } catch(error: any) {
+        throw new Error(`Failed to fetch user posts: ${error.message}`)
     }
 }

@@ -60,6 +60,7 @@ const ThreadCard = ({
                         </Link>
                         
                         <div className="thread-card_bar"/>
+                        
                     </div>
                     <div className="flex w-full flex-col">
                         <Link href={`/profile/${author.id}`} className="w-fit">

@@ -14,6 +14,7 @@ import { updateUser } from '@/lib/actions/user.actions';
 import { Form } from '@/components/ui/form'
 import { Button } from '../ui/button';
 import ProfileForm from '../shared/ProfileForm';
+import { userInfo } from 'os';
 
 interface propTypes {
     user: {
@@ -66,10 +67,6 @@ const AccountProfile = ({ user, btnTitle }:propTypes) => {
                 image: values.profile_photo,
                 path: pathname
             })
-        }   else if('thread' in values) {
-            console.log("Thread is there!")
-        }   else if('threadComment' in values) {
-            console.log("Comments are there!")
         }
 
         if(pathname === '/profile/edit') {

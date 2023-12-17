@@ -10,7 +10,7 @@ const Page = async() => {
     const userData = {
         id: user?.id,
         objectId: userInfo?._id,
-        username: userInfo?.name || user?.username,
+        username: userInfo?.username || user?.username,
         name: userInfo?.name || user?.firstName || "",
         bio: userInfo?.bio || "",
         image: userInfo?.image || user?.imageUrl
@@ -26,7 +26,7 @@ const Page = async() => {
             <section className="mt-9 bg-dark-2 p-10">
                 <AccountProfile 
                     user={userData}
-                    btnTitle="Continue"
+                    // btnTitle="Continue"
                 />
             </section>
         </main>

@@ -85,12 +85,3 @@ const onSubmit = async(values: z.infer<typeof CommentValidation>) => {
 }
 
 export default Comment;
-{/* <ThreadForm
-    formControl={form.control}
-    isCommentThread={true}
-    commentThreadImage={currentUserImage}
-    formControlClassName="border-none bg-transparent"
-    formItemClassName="items-center"
-    buttonClassName="comment-form_btn"
-    buttonValue="Reply"
-/> */}

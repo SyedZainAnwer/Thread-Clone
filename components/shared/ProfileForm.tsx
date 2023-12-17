@@ -33,7 +33,6 @@ const ProfileForm = ({
     fieldName, 
     formLableClassName, 
     formItemClassName,
-    setFiles,
     formControl,
     handleImage,
     isThreadField

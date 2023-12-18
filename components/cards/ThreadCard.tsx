@@ -94,7 +94,7 @@ const ThreadCard = ({
                         )}
                     </div>
                     {/* {console.log(community.id)} */}
-            {!isComment && community ? (
+            {!isComment && community && (
                 <Link href={`/communities/${community.id}`} className="mt-5 flex items-center">
                     <p className="text-subtle-medium text-gray-1">
                         {formatDateString(createdAt)}
@@ -109,7 +109,7 @@ const ThreadCard = ({
                         className="ml-1 rounded-full object-cover"
                     />
                 </Link>
-            ): <p>HELLO</p>}
+            )}
                 </div>
                 {/* TODO: Delete Thread */}
             </div>

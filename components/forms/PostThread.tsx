@@ -74,7 +74,7 @@ const onSubmit = async(values: z.infer<typeof ThreadValidation>) => {
             )}
             />
 
-        <Button className="bg-primaty-500" type="submit">
+        <Button className="bg-primary-500" type="submit">
             Post thread
         </Button>
         </form>

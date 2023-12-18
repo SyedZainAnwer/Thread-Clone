@@ -6,6 +6,7 @@ const Home = async() => {
 
   const result = await fetchPosts(1, 30);
   const user = await currentUser();
+  console.log(result.posts, "POST")
 
   return (
     <>

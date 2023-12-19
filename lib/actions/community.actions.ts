@@ -14,16 +14,23 @@ export async function createCommunity(
   username: string,
   image: string,
   bio: string,
-  createdById: string // Change the parameter name to reflect it's an id
+  createdById: string
 ) {
   try {
-    connectToDB();
+    await connectToDB();
 
     // Find the user with the provided unique id
     const user = await User.findOne({ id: createdById });
 
     if (!user) {
-      throw new Error("User not found"); // Handle the case if the user with the id is not found
+      throw new Error('User not found');
+    }
+
+    // Check if the community with the same id already exists
+    const existingCommunity = await Community.findOne({ id });
+
+    if (existingCommunity) {
+      throw new Error('Community with the same id already exists');
     }
 
     const newCommunity = new Community({
@@ -32,7 +39,7 @@ export async function createCommunity(
       username,
       image,
       bio,
-      createdBy: user._id, // Use the mongoose ID of the user
+      createdBy: user._id,
     });
 
     const createdCommunity = await newCommunity.save();
@@ -43,8 +50,7 @@ export async function createCommunity(
 
     return createdCommunity;
   } catch (error) {
-    // Handle any errors
-    console.error("Error creating community:", error);
+    console.error('Error creating community:', error);
     throw error;
   }
 }

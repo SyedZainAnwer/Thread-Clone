@@ -1,6 +1,7 @@
 const Loader = ({ clasName }: { clasName?: string }) => {
     return (
-        <div className={`${clasName ?? clasName} text-center`} role="status">
+        <div className="flex justify-center xs:left-20 left-0 top-0 items-center fixed w-full h-screen bg-black bg-opacity-25">
+        <div className="text-center" role="status">
             <svg
             aria-hidden="true"
             className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-primary"
@@ -18,6 +19,7 @@ const Loader = ({ clasName }: { clasName?: string }) => {
             />
             </svg>
             <span className="sr-only">Loading...</span>
+        </div>
         </div>
         )
     }

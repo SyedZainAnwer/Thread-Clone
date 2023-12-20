@@ -4,6 +4,13 @@ import Link from "next/link";
 import { formatDateString } from "@/lib/utils";
 import DeleteThread from "../forms/DeleteThread";
 
+import ThreadIcons from "../shared/ThreadIcons";
+
+import heartIcon from '@/public/assets/heart-gray.svg';
+import repostIcon from '@/public/assets/repost.svg';
+import shareIcon from '@/public/assets/share.svg';
+import commentIcon from '@/public/assets/reply.svg';
+
 interface propTypes {
     id: string;
     currentUserId: string;
@@ -70,38 +77,16 @@ const ThreadCard = ({
                 <p className='mt-2 text-small-regular text-light-2'>{content}</p>
 
                 <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-                <div className='flex gap-3.5'>
-                    <Image
-                    src='/assets/heart-gray.svg'
-                    alt='heart'
-                    width={24}
-                    height={24}
-                    className='cursor-pointer object-contain'
-                    />
-                    <Link href={`/thread/${id}`}>
-                    <Image
-                        src='/assets/reply.svg'
-                        alt='heart'
-                        width={24}
-                        height={24}
-                        className='cursor-pointer object-contain'
-                    />
-                    </Link>
-                    <Image
-                        src='/assets/repost.svg'
-                        alt='heart'
-                        width={24}
-                        height={24}
-                            className='cursor-pointer object-contain'
-                    />
-                    <Image
-                    src='/assets/share.svg'
-                    alt='heart'
-                    width={24}
-                    height={24}
-                    className='cursor-pointer object-contain'
-                    />
-                </div>
+                <div className="mt-5 flex flex-row gap-3">
+                            <ThreadIcons src={heartIcon} />
+                            <ThreadIcons 
+                                src={commentIcon} 
+                                isCommentIcon={true}
+                                commentLink={`/thread/${id}`}
+                            />
+                            <ThreadIcons src={repostIcon} />
+                            <ThreadIcons src={shareIcon} />
+                        </div>
 
                 {isComment && comments.length > 0 && (
                     <Link href={`/thread/${id}`}>

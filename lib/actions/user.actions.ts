@@ -8,16 +8,26 @@ import Thread from "../models/thread.model";
 import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
+import { useState } from "react";
+
+// const [ isLoading, setLoading ] = useState(false)
 
 export async function fetchUser(userId: string) {
   try {
+    // setLoading(true); // Set loading state to true when starting to fetch data
+
     connectToDB();
 
-    return await User.findOne({ id: userId }).populate({
+    const user = await User.findOne({ id: userId }).populate({
       path: "communities",
       model: Community,
     });
+
+    // setLoading(false); // Set loading state to false when data is fetched
+
+    return user;
   } catch (error: any) {
+    // setLoading(false); // Set loading state to false if there is an error
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
 }

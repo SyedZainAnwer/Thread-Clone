@@ -1,3 +1,5 @@
+// "use client"
+
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
@@ -7,21 +9,43 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import Image from "next/image";
 import ThreadsTab from "@/components/shared/ThreadsTab";
+import Loader from "@/components/shared/Loader";
 
 const Page = async({ params }: { params: { id: string } }) => {
 
+    let isLoading = true;
+    let userInfo: any = null;
     const user = await currentUser();
 
     if(!user) return null;
 
-    const userInfo = await fetchUser(params.id);
+    try {
+        userInfo = await fetchUser(params.id);
 
-    if(!userInfo?.onboarded) redirect('/onboarding')
+        if(!userInfo?.onboarded) redirect('/onboarding');
+
+        isLoading = false;
+    } catch(error: any){
+        isLoading = false;
+        throw new Error(`Error: ${error.message}`)
+    }
+    
+    // const userInfo = await fetchUser(params.id);
+
+    // if(!userInfo?.onboarded) redirect('/onboarding');
 
     return(
         <section>
-            <ProfileHeader 
-                accountId={userInfo.id}
+            {!isLoading && (
+                <div className="flex justify-center xs:left-20 left-0 top-0 items-center fixed w-full h-screen bg-black bg-opacity-25">
+                    <Loader />
+                </div>
+            )}
+
+            {isLoading && (
+                <>
+                <ProfileHeader 
+                accountId={userInfo?.id}
                 authUserId={user.id}
                 name={userInfo.name}
                 username={userInfo.username}
@@ -64,6 +88,8 @@ const Page = async({ params }: { params: { id: string } }) => {
                     ))}
                 </Tabs>
             </div>
+                </>
+            )} 
         </section>
     )
 }

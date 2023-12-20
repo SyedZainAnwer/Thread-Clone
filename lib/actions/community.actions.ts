@@ -8,14 +8,14 @@ import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
 
-export async function createCommunity(
+export const createCommunity = async(
   id: string,
   name: string,
   username: string,
   image: string,
   bio: string,
   createdById: string
-) {
+) => {
   try {
     await connectToDB();
 
@@ -44,7 +44,6 @@ export async function createCommunity(
 
     const createdCommunity = await newCommunity.save();
 
-    // Update User model
     user.communities.push(createdCommunity._id);
     await user.save();
 
@@ -55,7 +54,7 @@ export async function createCommunity(
   }
 }
 
-export async function fetchCommunityDetails(id: string) {
+export const fetchCommunityDetails = async(id: string) => {
   try {
     connectToDB();
 
@@ -70,13 +69,12 @@ export async function fetchCommunityDetails(id: string) {
 
     return communityDetails;
   } catch (error) {
-    // Handle any errors
     console.error("Error fetching community details:", error);
     throw error;
   }
 }
 
-export async function fetchCommunityPosts(id: string) {
+export const fetchCommunityPosts = async(id: string) => {
   try {
     connectToDB();
 
@@ -95,7 +93,7 @@ export async function fetchCommunityPosts(id: string) {
           populate: {
             path: "author",
             model: User,
-            select: "image _id", // Select the "name" and "_id" fields from the "User" model
+            select: "image _id",
           },
         },
       ],
@@ -103,13 +101,12 @@ export async function fetchCommunityPosts(id: string) {
 
     return communityPosts;
   } catch (error) {
-    // Handle any errors
     console.error("Error fetching community posts:", error);
     throw error;
   }
 }
 
-export async function fetchCommunities({
+export const fetchCommunities = async({
   searchString = "",
   pageNumber = 1,
   pageSize = 20,
@@ -119,20 +116,16 @@ export async function fetchCommunities({
   pageNumber?: number;
   pageSize?: number;
   sortBy?: SortOrder;
-}) {
+}) => {
   try {
     connectToDB();
 
-    // Calculate the number of communities to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
 
-    // Create a case-insensitive regular expression for the provided search string.
     const regex = new RegExp(searchString, "i");
 
-    // Create an initial query object to filter communities.
     const query: FilterQuery<typeof Community> = {};
 
-    // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
       query.$or = [
         { username: { $regex: regex } },
@@ -140,22 +133,18 @@ export async function fetchCommunities({
       ];
     }
 
-    // Define the sort options for the fetched communities based on createdAt field and provided sort order.
     const sortOptions = { createdAt: sortBy };
 
-    // Create a query to fetch the communities based on the search and sort criteria.
     const communitiesQuery = Community.find(query)
       .sort(sortOptions)
       .skip(skipAmount)
       .limit(pageSize)
       .populate("members");
 
-    // Count the total number of communities that match the search criteria (without pagination).
     const totalCommunitiesCount = await Community.countDocuments(query);
 
     const communities = await communitiesQuery.exec();
 
-    // Check if there are more communities beyond the current page.
     const isNext = totalCommunitiesCount > skipAmount + communities.length;
 
     return { communities, isNext };
@@ -165,52 +154,46 @@ export async function fetchCommunities({
   }
 }
 
-export async function addMemberToCommunity(
+export const addMemberToCommunity = async(
   communityId: string,
   memberId: string
-) {
+) => {
   try {
     connectToDB();
 
-    // Find the community by its unique id
     const community = await Community.findOne({ id: communityId });
 
     if (!community) {
       throw new Error("Community not found");
     }
 
-    // Find the user by their unique id
     const user = await User.findOne({ id: memberId });
 
     if (!user) {
       throw new Error("User not found");
     }
 
-    // Check if the user is already a member of the community
     if (community.members.includes(user._id)) {
       throw new Error("User is already a member of the community");
     }
 
-    // Add the user's _id to the members array in the community
     community.members.push(user._id);
     await community.save();
 
-    // Add the community's _id to the communities array in the user
     user.communities.push(community._id);
     await user.save();
 
     return community;
   } catch (error) {
-    // Handle any errors
     console.error("Error adding member to community:", error);
     throw error;
   }
 }
 
-export async function removeUserFromCommunity(
+export const removeUserFromCommunity = async(
   userId: string,
   communityId: string
-) {
+) => {
   try {
     connectToDB();
 
@@ -228,13 +211,11 @@ export async function removeUserFromCommunity(
       throw new Error("Community not found");
     }
 
-    // Remove the user's _id from the members array in the community
     await Community.updateOne(
       { _id: communityIdObject._id },
       { $pull: { members: userIdObject._id } }
     );
 
-    // Remove the community's _id from the communities array in the user
     await User.updateOne(
       { _id: userIdObject._id },
       { $pull: { communities: communityIdObject._id } }
@@ -242,18 +223,17 @@ export async function removeUserFromCommunity(
 
     return { success: true };
   } catch (error) {
-    // Handle any errors
     console.error("Error removing user from community:", error);
     throw error;
   }
 }
 
-export async function updateCommunityInfo(
+export const updateCommunityInfo = async(
   communityId: string,
   name: string,
   username: string,
   image: string
-) {
+) => {
   try {
     connectToDB();
 
@@ -275,7 +255,7 @@ export async function updateCommunityInfo(
   }
 }
 
-export async function deleteCommunity(communityId: string) {
+export const deleteCommunity = async(communityId: string) => {
   try {
     connectToDB();
 

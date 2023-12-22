@@ -49,6 +49,11 @@ const ThreadCard = ({
     isComment,
     isLiked
 }: propTypes) => {
+
+    const handleLike = () => {
+        !isLiked
+    }
+
     return (
         <article
         className={`flex w-full flex-col rounded-xl ${
@@ -83,12 +88,10 @@ const ThreadCard = ({
                 <div className="mt-5 flex flex-row gap-3">
                     {isLiked ? (
                         <>
-                        <ThreadIcons src={heartFilledIcon} onIconClick={() => !isLiked}/>
+                            <ThreadIcons src={heartFilledIcon} />
                         </>
                     ):(
-                        <>
-                            <ThreadIcons src={heartIcon} onIconClick={() => !isLiked}/>
-                        </>
+                            <ThreadIcons src={heartIcon} />
                     )}
                     <ThreadIcons 
                         src={commentIcon} 

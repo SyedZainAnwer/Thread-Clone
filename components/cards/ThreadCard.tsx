@@ -7,6 +7,7 @@ import DeleteThread from "../forms/DeleteThread";
 import ThreadIcons from "../shared/ThreadIcons";
 
 import heartIcon from '@/public/assets/heart-gray.svg';
+import heartFilledIcon from '@/public/assets/heart-filled.svg'
 import repostIcon from '@/public/assets/repost.svg';
 import shareIcon from '@/public/assets/share.svg';
 import commentIcon from '@/public/assets/reply.svg';
@@ -33,6 +34,7 @@ interface propTypes {
         };
     }[];
     isComment?: boolean;
+    isLiked?: boolean
 }
 
 const ThreadCard = ({
@@ -45,6 +47,7 @@ const ThreadCard = ({
     createdAt,
     comments,
     isComment,
+    isLiked
 }: propTypes) => {
     return (
         <article
@@ -78,15 +81,23 @@ const ThreadCard = ({
 
                 <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
                 <div className="mt-5 flex flex-row gap-3">
-                            <ThreadIcons src={heartIcon} />
-                            <ThreadIcons 
-                                src={commentIcon} 
-                                isCommentIcon={true}
-                                commentLink={`/thread/${id}`}
-                            />
-                            <ThreadIcons src={repostIcon} />
-                            <ThreadIcons src={shareIcon} />
-                        </div>
+                    {isLiked ? (
+                        <>
+                        <ThreadIcons src={heartFilledIcon} onIconClick={() => !isLiked}/>
+                        </>
+                    ):(
+                        <>
+                            <ThreadIcons src={heartIcon} onIconClick={() => !isLiked}/>
+                        </>
+                    )}
+                    <ThreadIcons 
+                        src={commentIcon} 
+                        isCommentIcon={true}
+                        commentLink={`/thread/${id}`}
+                    />
+                    <ThreadIcons src={repostIcon} />
+                    <ThreadIcons src={shareIcon} />
+                </div>
 
                 {isComment && comments.length > 0 && (
                     <Link href={`/thread/${id}`}>

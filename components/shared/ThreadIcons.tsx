@@ -1,10 +1,10 @@
 import Image from 'next/image';
-import commentIcon from '@/public/assets/reply.svg'
 import Link from 'next/link';
+import { MouseEventHandler } from 'react';
 
 interface propTypes {
     src: string;
-    onIconClick?: () => void;
+    onIconClick?: MouseEventHandler<HTMLImageElement>;
     isCommentIcon?: boolean;
     commentLink?: string;
 }
@@ -25,7 +25,7 @@ const ThreadIcons = ({ src, onIconClick, isCommentIcon, commentLink }: propTypes
                 <Link href={commentLink || ""}>
                     <Image 
                         src={src}
-                        onClick={onIconClick}
+                        // onClick={onIconClick}
                         alt='icon'
                         width={24}
                         height={24}

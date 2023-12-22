@@ -6,6 +6,7 @@ import Loader from "@/components/shared/Loader";
 const Home = async() => {
 
   const user = await currentUser();
+
   let isLoading = true;
   let result: any = null;
 

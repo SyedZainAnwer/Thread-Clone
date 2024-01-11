@@ -236,53 +236,53 @@ export const addCommentToThread = async(
   }
 }
 
-const updateLikeCount = async (threadId: string, likes: string[]) => {
+export const updateLikeCount = async (threadId: string, likes: string[]) => {
   const likeCount = likes.length;
 
   await Thread.findByIdAndUpdate(threadId, { likeCount, likes });
   return likeCount;
 };
 
-export const likeThread = async (threadId: string, userId: string) => {
-  connectToDB();
+// export const likeThread = async (threadId: string, userId: string) => {
+//   connectToDB();
 
-  try {
-    const thread = await Thread.findById(threadId);
+//   try {
+//     const thread = await Thread.findById(threadId);
 
-    if (!thread) {
-      throw new Error("Thread not found");
-    }
+//     if (!thread) {
+//       throw new Error("Thread not found");
+//     }
 
-    if (!thread.likes.includes(userId)) {
-      thread.likes.push(userId);
-      return updateLikeCount(threadId, thread.likes);
-    }
+//     if (!thread.likes.includes(userId)) {
+//       thread.likes.push(userId);
+//       return updateLikeCount(threadId, thread.likes);
+//     }
 
-    // User has already liked, no change
-    return thread.likes.length;
-  } catch (error: any) {
-    throw new Error(`Failed to like the thread: ${error.message}`);
-  }
-};
+//     // User has already liked, no change
+//     return thread.likes.length;
+//   } catch (error: any) {
+//     throw new Error(`Failed to like the thread: ${error.message}`);
+//   }
+// };
 
-export const unlikeThread = async (threadId: string, userId: string) => {
-  connectToDB();
+// export const unlikeThread = async (threadId: string, userId: string) => {
+//   connectToDB();
 
-  try {
-    const thread = await Thread.findById(threadId);
+//   try {
+//     const thread = await Thread.findById(threadId);
 
-    if (!thread) {
-      throw new Error("Thread not found");
-    }
+//     if (!thread) {
+//       throw new Error("Thread not found");
+//     }
 
-    if (thread.likes.includes(userId)) {
-      thread.likes = thread.likes.filter((id: any) => id !== userId);
-      return updateLikeCount(threadId, thread.likes);
-    }
+//     if (thread.likes.includes(userId)) {
+//       thread.likes = thread.likes.filter((id: any) => id !== userId);
+//       return updateLikeCount(threadId, thread.likes);
+//     }
 
-    // User has not liked, no change
-    return thread.likes.length;
-  } catch (error: any) {
-    throw new Error(`Failed to unlike the thread: ${error.message}`);
-  }
-};
+//     // User has not liked, no change
+//     return thread.likes.length;
+//   } catch (error: any) {
+//     throw new Error(`Failed to unlike the thread: ${error.message}`);
+//   }
+// };

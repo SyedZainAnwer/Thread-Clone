@@ -2,22 +2,25 @@ import { fetchPosts } from "@/lib/actions/thread.actions";
 import { currentUser } from "@clerk/nextjs";
 import ThreadCard from "@/components/cards/ThreadCard";
 import Loader from "@/components/shared/Loader";
+import { useGlobalContext } from "@/context/AppContext";
 
 const Home = async() => {
 
+  const { likeStatus } = useGlobalContext();
+  
   const user = await currentUser();
-
+  
   let isLoading = true;
   let result: any = null;
-
+  
   if(!user) return null;
-
+  
   try {
     result = await fetchPosts(1, 30);
-      isLoading = false;
+    isLoading = false;
   } catch(error: any){
-      isLoading = false;
-      throw new Error(`Error: ${error.message}`)
+    isLoading = false;
+    throw new Error(`Error: ${error.message}`)
   }
   
   return (
@@ -31,7 +34,7 @@ const Home = async() => {
           <p className="no-result">No threads found</p>
         ) : (
           <>
-            {result.posts.map((post: any) => (
+            {result?.posts.map((post: any) => (
               <ThreadCard 
                 key={post._id}
                 id={post._id}
@@ -42,6 +45,7 @@ const Home = async() => {
                 community={post.community}
                 createdAt={post.createdAt}
                 comments={post.children}
+                isLiked={likeStatus.isLiked}
               />
             ))}
           </>

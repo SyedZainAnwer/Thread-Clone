@@ -47,13 +47,8 @@ const ThreadCard = ({
     createdAt,
     comments,
     isComment,
-    isLiked
+    isLiked,
 }: propTypes) => {
-
-    const handleLike = () => {
-        !isLiked
-    }
-
     return (
         <article
         className={`flex w-full flex-col rounded-xl ${
